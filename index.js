@@ -1,7 +1,8 @@
 //4500
 //18700
-const INITIAL_SKIP = 18700;
-const SIZE = 100;
+//20100
+const INITIAL_SKIP = 31700;
+const SIZE = 200;
 const LIMIT = 182000;
 
 const CSV_FILE = 'userStats.csv';
