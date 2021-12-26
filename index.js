@@ -1,6 +1,6 @@
 const INITIAL_SKIP = 0;
 const SIZE = 200;
-const LIMIT = 182000;
+const LIMIT = 183000;
 
 const CSV_FILE = 'userStats.csv';
 
@@ -77,8 +77,8 @@ const createBtbUrl = (username) => {
 }
 
 
-writeCsvHeaderToFile(CSV_FILE);
-// main(INITIAL_SKIP, SIZE, CSV_FILE);
+// writeCsvHeaderToFile(CSV_FILE);
+main(INITIAL_SKIP, SIZE, CSV_FILE);
 
 
 
@@ -98,11 +98,14 @@ async function writeChunkToFile(skip, size, filename) {
 
   const userCsvWrites = [];
   for (const username of usernames) {
-    userCsvWrites.push(writeCsvStatsToFile(filename, username));
-  }
-  let userObjResults = await Promise.all(userCsvWrites).catch((err) => {
-    console.error(`ERROR in chunk file write`);
+    let writtenCsvToFile = await writeCsvStatsToFile(filename, username).catch((err) => {
+      console.error(`ERROR writing ${username} to file.`);
+      fs.appendFileSync("redo_names.txt", `${username}\n`, (error) => {
+      console.error(`ERROR writing ${username} to redo_names.txt`);
+      if (error) throw error;
     });
+    })
+  }
 }
 
 function writeCsvHeaderToFile(filename) {
@@ -290,4 +293,11 @@ function getUsernames(skip, size) {
   const usernamesList = [];
   const usernamesTxt = fs.readFileSync('unique_names.txt', 'utf-8');
   return usernamesTxt.split(/\r?\n/).slice(skip, skip + size);
+}
+
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+async function sleep(ms) {
+    await timeout(ms);
 }
