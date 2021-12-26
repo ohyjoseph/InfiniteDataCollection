@@ -1,6 +1,6 @@
 const INITIAL_SKIP = 0;
-const SIZE = 200;
-const LIMIT = 183000;
+const SIZE = 100;
+const LIMIT = 182000;
 
 const CSV_FILE = 'userStats.csv';
 
@@ -98,19 +98,16 @@ async function writeChunkToFile(skip, size, filename) {
 
   const userCsvWrites = [];
   for (const username of usernames) {
-    let writtenCsvToFile = await writeCsvStatsToFile(filename, username).catch((err) => {
-      console.error(`ERROR writing ${username} to file.`);
-      fs.appendFileSync("redo_names.txt", `${username}\n`, (error) => {
-      console.error(`ERROR writing ${username} to redo_names.txt`);
-      if (error) throw error;
-    });
-    })
+    userCsvWrites.push(writeCsvStatsToFile(filename, username));
   }
+  let userObjResults = await Promise.all(userCsvWrites).catch((err) => {
+    console.error(`ERROR in chunk file write ${skip} to ${skip+size}`);
+    });
 }
 
 function writeCsvHeaderToFile(filename) {
   fs.appendFileSync(filename, `${getCsvHeader()}\n`, (error) => {
-      console.error(`ERROR writing ${username} to ${filename}`);
+      console.error(`ERROR writing csv headers to ${filename}`);
       if (error) throw error;
     });
 }
@@ -118,7 +115,7 @@ function writeCsvHeaderToFile(filename) {
 async function writeCsvStatsToFile(filename, username) {
   const csvStats = await getCsvStats(username);
   fs.appendFileSync(filename, `${csvStats}\n`, (error) => {
-      console.error(`ERROR writing csv headers to ${filename}`);
+      console.error(`ERROR writing ${username} to ${filename}`);
       if (error) throw error;
     });
 }
@@ -128,6 +125,8 @@ async function getCsvStats(username) {
   const unrankedCsv = await convertUnrankedDataToStatsCsv(username);
   return `${username},${rankedCsv},${unrankedCsv}`;
 }
+
+// convertRankedDataToStatsCsv('xkamakazi cowxx');
 
 async function convertRankedDataToStatsCsv(username) {
   const DEFAULT_CSV_VALUE = createCommaString(28);
@@ -181,7 +180,7 @@ async function convertUnrankedDataToStatsCsv(username) {
 
 async function getGameData(username, urlCreator) {
   const crpResponse = await fetchGameData(username, urlCreator);
-  if (!crpResponse.data.data.length) return null;
+  if (!crpResponse || !crpResponse.data || !crpResponse.data.data || !crpResponse.data.data.length) return null;
   return crpResponse.data.data[0];
 }
 
@@ -190,8 +189,9 @@ async function fetchGameData(username, urlCreator) {
     console.error(`ERROR fetching ${username}`);
     fs.appendFileSync("redo_names.txt", `${username}\n`, (error) => {
       console.error(`ERROR writing ${username} to redo_names.txt`);
-      if (error) throw error;
+      return Promise.resolve();
     });
+    return Promise.resolve();
   });
 }
 
@@ -266,6 +266,7 @@ function convertCsrObjToCsvObj(csrObj) {
 async function getCsrObj(username) {
   const csrObj = {};
   const csrResponse = await fetchGameData(username, createCsrUrl);
+  if (!csrResponse) return createCommaString(3);
   const csrSegments = csrResponse.data.data.segments;
   for (let i=0; i<3; i++) {
     let segment = csrSegments[i];
@@ -293,11 +294,4 @@ function getUsernames(skip, size) {
   const usernamesList = [];
   const usernamesTxt = fs.readFileSync('unique_names.txt', 'utf-8');
   return usernamesTxt.split(/\r?\n/).slice(skip, skip + size);
-}
-
-function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-async function sleep(ms) {
-    await timeout(ms);
 }
