@@ -1,7 +1,10 @@
 //4500
 //18700
 //20100
-const INITIAL_SKIP = 31700;
+//31700
+//42500
+//47900
+const INITIAL_SKIP = 47900;
 const SIZE = 200;
 const LIMIT = 182000;
 
