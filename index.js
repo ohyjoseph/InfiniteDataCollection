@@ -5,8 +5,10 @@
 //42500
 //47900
 //53500
-const INITIAL_SKIP = 70700;
-const SIZE = 200;
+//70700
+//80100
+const INITIAL_SKIP = 80100;
+const SIZE = 400;
 const LIMIT = 182000;
 
 const CSV_FILE = 'userStats.csv';
