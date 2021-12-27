@@ -9,7 +9,8 @@
 //80100
 //93300
 //101100
-const INITIAL_SKIP = 101100;
+//119300
+const INITIAL_SKIP = 119300;
 const SIZE = 200;
 const LIMIT = 182000;
 
