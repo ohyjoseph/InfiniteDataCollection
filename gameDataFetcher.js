@@ -25,8 +25,6 @@ const SIZE = 200;
 const LIMIT = 182000;
 
 const CSV_FILE = 'userStats.csv';
-const REDO_NAMES = 'redo_names.txt';
-const UNIQUE_NAMES = 'unique_names.txt';
 
 const axios = require('axios').default;
 const fs = require('fs');
@@ -102,7 +100,7 @@ const createBtbUrl = (username) => {
 
 
 // writeCsvHeaderToFile(CSV_FILE);
-// main(INITIAL_SKIP, SIZE, CSV_FILE);
+main(INITIAL_SKIP, SIZE, CSV_FILE);
 
 
 
@@ -211,8 +209,8 @@ async function getGameData(username, urlCreator) {
 async function fetchGameData(username, urlCreator) {
   return await axios.get(urlCreator(username)).catch((err) => {
     console.error(`ERROR fetching ${username}`);
-    fs.appendFileSync(REDO_NAMES, `${username}\n`, (error) => {
-      console.error(`ERROR writing ${username} to ${REDO_NAMES}`);
+    fs.appendFileSync("redo_names.txt", `${username}\n`, (error) => {
+      console.error(`ERROR writing ${username} to redo_names.txt`);
       return Promise.resolve();
     });
     return Promise.resolve();
@@ -317,6 +315,6 @@ function createCommaString(numCommas) {
 
 function getUsernames(skip, size) {
   const usernamesList = [];
-  const usernamesTxt = fs.readFileSync(UNIQUE_NAMES, 'utf-8');
+  const usernamesTxt = fs.readFileSync('unique_names.txt', 'utf-8');
   return usernamesTxt.split(/\r?\n/).slice(skip, skip + size);
 }
