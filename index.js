@@ -286,9 +286,10 @@ function convertCsrObjToCsvObj(csrObj) {
 }
 
 async function getCsrObj(username) {
-  const csrObj = {};
+  const DEFAULT_RANK_ENTRY = {'csr': '', 'tier': '', 'rank': '', 'percentile': ''};
+  const csrObj = {[CRP_HASH]: DEFAULT_RANK_ENTRY, [CON_HASH]: DEFAULT_RANK_ENTRY, [MNK_HASH]: DEFAULT_RANK_ENTRY};
   const csrResponse = await fetchGameData(username, createCsrUrl);
-  if (!csrResponse) return createCommaString(3);
+  if (!csrResponse) return csrObj;
   const csrSegments = csrResponse.data.data.segments;
   for (let i=0; i<3; i++) {
     let segment = csrSegments[i];
