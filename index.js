@@ -20,13 +20,13 @@
 //170900
 //175700
 //180900
-const INITIAL_SKIP = 180900;
+const INITIAL_SKIP = 18600;
 const SIZE = 200;
-const LIMIT = 182000;
+const LIMIT = 21700;
 
-const CSV_FILE = 'userStats.csv';
-const REDO_NAMES = 'redo_names.txt';
-const UNIQUE_NAMES = 'unique_names.txt';
+const CSV_FILE = 'diffUserStats.csv';
+const REDO_NAMES = 'diff_redo_names.txt';
+const UNIQUE_NAMES = 'diff_names.txt';
 
 const axios = require('axios').default;
 const fs = require('fs');
@@ -102,7 +102,7 @@ const createBtbUrl = (username) => {
 
 
 // writeCsvHeaderToFile(CSV_FILE);
-// main(INITIAL_SKIP, SIZE, CSV_FILE);
+main(INITIAL_SKIP, SIZE, CSV_FILE);
 
 
 
